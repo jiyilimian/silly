@@ -266,12 +266,12 @@ public class UserLoadBalance implements LoadBalance{
 	    public int compareTo(Threshold o) {
 	    	
 	    	if (weight > o.weight) {
-	    		return 1;
+	    		return -1;
 	    	} else if (weight == o.weight) {
-	    		return o.effic - effic;
+	    		return effic - o.effic;
 	    	}
 	    	
-	        return -1;
+	        return 1;
 	    }
 	    
 	    public Threshold(int index, int weight, int effic){
