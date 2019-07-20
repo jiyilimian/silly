@@ -29,7 +29,7 @@ public class UserLoadBalance implements LoadBalance{
     
     @Override
     public <T> Invoker<T> select(List<Invoker<T>> invokers, URL url, Invocation invocation) throws RpcException {
-    	return selectInvokerIndex1(invokers);
+    	return selectInvokerIndex2(invokers);
 //    	return selectInvokerIndex2(invokers);
 //    	return selectInvokerIndex3(invokers);
     }
