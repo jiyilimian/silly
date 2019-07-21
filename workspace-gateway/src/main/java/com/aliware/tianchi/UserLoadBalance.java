@@ -265,13 +265,13 @@ public class UserLoadBalance implements LoadBalance{
 	    @Override
 	    public int compareTo(Threshold o) {
 	    	
-	    	if (weight > o.weight) {
-	    		return -1;
-	    	} else if (weight == o.weight) {
-	    		return effic - o.effic;
+	    	if (effic > o.effic) {
+	    		return 1;
+	    	} else if (effic == o.effic) {
+	    		return o.weight - weight;
 	    	}
 	    	
-	        return 1;
+	        return -1;
 	    }
 	    
 	    public Threshold(int index, int weight, int effic){
