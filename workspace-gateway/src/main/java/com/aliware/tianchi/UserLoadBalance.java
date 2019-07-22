@@ -200,14 +200,13 @@ public class UserLoadBalance implements LoadBalance{
     					continue;
     				}
     				
-    				weight = weight * (500 / clientTimeAvgSpendCurr);
     				long activeCount = serverLoadInfo.getActiveCount().get();
     				int efficValue = serverLoadInfo.getProviderThread() * 1000;
     				if (activeCount > 0) {
     					efficValue = new BigDecimal(serverLoadInfo.getProviderThread()).multiply(new BigDecimal(1000)).divide(
         						new BigDecimal(activeCount), RoundingMode.HALF_UP).intValue();
     				}
-    				hasPermitQueue.add(new Threshold(index, weight, efficValue));
+    				hasPermitQueue.add(new Threshold(index, weight, efficValue, clientTimeAvgSpendCurr));
     				totalWeight = totalWeight + weight;
     			}
     		}
@@ -225,14 +224,13 @@ public class UserLoadBalance implements LoadBalance{
     					continue;
     				}
     				
-    				weight = weight * (500 / clientTimeAvgSpendCurr);
     				long reqCount = serverLoadInfo.getReqCount().get();
     				int efficValue = serverLoadInfo.getProviderThread() * 1000;
     				if (reqCount > 0) {
     					efficValue = new BigDecimal(serverLoadInfo.getProviderThread()).multiply(new BigDecimal(1000)).divide(
         						new BigDecimal(reqCount), RoundingMode.HALF_UP).intValue();
     				}
-    				hasPermitQueue.add(new Threshold(index, weight, efficValue));
+    				hasPermitQueue.add(new Threshold(index, weight, efficValue, clientTimeAvgSpendCurr));
     				totalWeight = totalWeight + weight;
     			}
     		}
@@ -261,23 +259,29 @@ public class UserLoadBalance implements LoadBalance{
 	private class Threshold implements Comparable<Threshold> {
 		
 	    int index, weight, effic;
+	    int avgTimeCurr;
 	    
 	    @Override
 	    public int compareTo(Threshold o) {
 	    	
+	    	if (avgTimeCurr > o.avgTimeCurr) {
+	    		return 1;
+	    	}
+	    	
 	    	if (effic > o.effic) {
 	    		return -1;
 	    	} else if (effic == o.effic) {
-	    		return o.weight - weight;
+	    		return weight - o.weight;
 	    	}
 	    	
 	        return 1;
 	    }
 	    
-	    public Threshold(int index, int weight, int effic){
+	    public Threshold(int index, int weight, int effic, int avgTimeCurr){
 	    	this.index = index;
 	        this.weight = weight;
 	        this.effic = effic;
+	        this.avgTimeCurr = avgTimeCurr;
 	    }
 	    
 	}
